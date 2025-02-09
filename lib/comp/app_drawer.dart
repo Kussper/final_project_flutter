@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submit/Screens/Login_Page.dart';
@@ -9,90 +8,133 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.isDarkMode;
 
-    return Drawer(
-      child: Column(
-        children: <Widget>[
-          UserAccountsDrawerHeader(
-            accountName: Text("اهلا,محمود", textAlign: TextAlign.right),
-            accountEmail: Text("mahmoud@gmail.com", textAlign: TextAlign.right),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('images/user.jpg'),
+    // Dynamic icon color & style
+    final Color iconColor = isDarkMode ? Colors.white54 : Colors.black87;
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Drawer(
+        child: Column(
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: const Text(
+                "أهلاً, محمود",
+                textAlign: TextAlign.right,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              accountEmail: const Text(
+                "mahmoud@gmail.com",
+                textAlign: TextAlign.right,
+              ),
+              currentAccountPicture: const CircleAvatar(
+                backgroundImage: AssetImage('images/user.jpg'),
+              ),
+              decoration: const BoxDecoration(color: Color(0xFF725DFE)),
             ),
-            decoration: BoxDecoration(color: Color(0xFF725DFE)),
-          ),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                _createDrawerItem(
-                  icon: Icons.home,
-                  text: 'الرئيسية',
-                  onTap: () =>
-                      _navigateToHome(context), // Navigate to HomeScreen
-                ),
-                Divider(),
-                _createDrawerItem(
-                    icon: Icons.settings,
-                    text: 'الاعدادات',
-                    onTap: () => _navigateTo(context, 'Settings')),
-                ListTile(
-                  leading: Icon(Icons.brightness_6),
-                  title: Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.end, // Aligns children to the right
-                    children: [
-                      Switch(
-                        value: themeProvider.isDarkMode,
-                        onChanged: (value) {
-                          themeProvider.toggleTheme();
-                        },
-                      ),
-                      Text('الوضع المظلم',
-                          textAlign:
-                              TextAlign.right), // Text aligned to the right
-                    ],
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  _createDrawerItem(
+                    icon: isDarkMode ? Icons.home_outlined : Icons.home,
+                    text: 'الرئيسية',
+                    iconColor: iconColor,
+                    onTap: () => _navigateToHome(context),
                   ),
-                ),
-                _createDrawerItem(
-                    icon: Icons.help,
+                  const Divider(),
+                  _createDrawerItem(
+                    icon: isDarkMode ? Icons.settings_outlined : Icons.settings,
+                    text: 'الإعدادات',
+                    iconColor: iconColor,
+                    onTap: () => _navigateTo(context, 'Settings'),
+                  ),
+                  _darkModeToggle(themeProvider, iconColor, isDarkMode),
+                  _createDrawerItem(
+                    icon: isDarkMode ? Icons.help_outline : Icons.help,
                     text: 'المساعدة والدعم',
-                    onTap: () => _navigateTo(context, 'Help & Support')),
-                _createDrawerItem(
-                    icon: Icons.info,
+                    iconColor: iconColor,
+                    onTap: () => _navigateTo(context, 'Help & Support'),
+                  ),
+                  _createDrawerItem(
+                    icon: isDarkMode ? Icons.info_outline : Icons.info,
                     text: 'عن التطبيق',
-                    onTap: () => _navigateTo(context, 'About')),
-              ],
+                    iconColor: iconColor,
+                    onTap: () => _navigateTo(context, 'About'),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.logout, color: Colors.red),
-            title: Text('تسجيل الخروج',
-                style: TextStyle(color: Colors.red),
-                textAlign: TextAlign.right),
-            onTap: () => _logout(context),
+            const Divider(),
+            ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(Icons.logout, color: Colors.red),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'تسجيل الخروج',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ],
+              ),
+              onTap: () => _logout(context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Creates a drawer item where **icons adapt to dark/light mode**.
+  Widget _createDrawerItem({
+    required IconData icon,
+    required String text,
+    required Color iconColor,
+    GestureTapCallback? onTap,
+  }) {
+    return ListTile(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(icon, color: iconColor),
+          const SizedBox(width: 8),
+          Text(text, textAlign: TextAlign.right),
+        ],
+      ),
+      onTap: onTap,
+    );
+  }
+
+  /// Dark Mode Toggle: **Uses Outlined Icon in Dark Mode**
+  Widget _darkModeToggle(
+      ThemeProvider themeProvider, Color iconColor, bool isDarkMode) {
+    return ListTile(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(isDarkMode ? Icons.brightness_6_outlined : Icons.brightness_6,
+              color: iconColor),
+          const SizedBox(width: 8),
+          const Text('الوضع المظلم', textAlign: TextAlign.right),
+          const Spacer(),
+          Switch(
+            value: themeProvider.isDarkMode,
+            onChanged: (value) {
+              themeProvider.toggleTheme();
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _createDrawerItem(
-      {IconData? icon, required String text, GestureTapCallback? onTap}) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(text, textAlign: TextAlign.right),
-      onTap: onTap,
-    );
-  }
-
   void _navigateToHome(BuildContext context) {
-    Navigator.pop(context); // Close drawer
+    Navigator.pop(context);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-          builder: (context) => HomeScreen()), // Navigate to HomeScreen
+      MaterialPageRoute(builder: (context) => HomeScreen()),
     );
   }
 
@@ -103,7 +145,7 @@ class AppDrawer extends StatelessWidget {
   }
 
   void _logout(BuildContext context) {
-    Navigator.pop(context); // Close the drawer
+    Navigator.pop(context);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginPage()),

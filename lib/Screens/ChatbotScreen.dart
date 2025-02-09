@@ -92,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
-      endDrawer: AppDrawer(),
+      drawer: AppDrawer(),
       body: Column(
         children: [
           Padding(
@@ -122,7 +122,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
                         color: message['sender'] == 'user'
-                            ? Colors.blueAccent
+                            ? Color(0xFF725DFE)
                             : Colors.grey[200],
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -130,7 +130,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         message['text']!,
                         style: TextStyle(
                           color: message['sender'] == 'user'
-                              ? Colors.white
+                              ? Color(0xFFEDE7F6)
                               : Colors.black,
                         ),
                       ),

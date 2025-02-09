@@ -55,7 +55,7 @@ class CustomBottomNavBar extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.visibility),
-            label: 'عرض التقارير',
+            label: 'عرض البلاغات',
           ),
         ],
       ),

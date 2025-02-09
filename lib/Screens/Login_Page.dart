@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:submit/Screens/home_screen.dart';
 import '../employee_scrrens/home_page.dart';
+import '../themes/theme_provider.dart';
 import 'Register_Page_citzen.dart';
 
 class LoginPage extends StatefulWidget {
@@ -23,13 +25,11 @@ class _LoginPageState extends State<LoginPage> {
 
     if (_formKey.currentState!.validate()) {
       if (email == "kussper@gmail.com" && password == "12345678") {
-        // Navigate to Employee Home Page
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
       } else {
-        // Navigate to Citizen Home Page
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -44,6 +44,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.isDarkMode;
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: Directionality(
         textDirection: TextDirection.rtl,
@@ -53,17 +57,19 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const SizedBox(height: 40),
               Image.asset(
-                'images/logo-removebg-preview.png',
+                isDarkMode
+                    ? 'images/logo-white.png' // Dark mode image
+                    : 'images/logo-removebg-preview.png', // Light mode image
                 height: 100,
                 fit: BoxFit.cover,
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 "مرحبا بك",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF725DFE),
+                  color: isDarkMode ? Colors.white : const Color(0xFF725DFE),
                 ),
               ),
               const SizedBox(height: 40),
@@ -72,17 +78,26 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
                     _buildTextField(
-                        "البريد الالكتروني",
-                        Icons.email_outlined,
-                        false,
-                        emailController,
-                        emailValidator,
-                        "example@gmail.com"),
-                    _buildTextField("كلمة المرور", Icons.lock_outline, true,
-                        passwordController, passwordValidator, "******"),
-                    _buildLoginButton(context),
+                      "البريد الالكتروني",
+                      Icons.email_outlined,
+                      false,
+                      emailController,
+                      emailValidator,
+                      "example@gmail.com",
+                      theme,
+                    ),
+                    _buildTextField(
+                      "كلمة المرور",
+                      Icons.lock_outline,
+                      true,
+                      passwordController,
+                      passwordValidator,
+                      "******",
+                      theme,
+                    ),
+                    _buildLoginButton(context, theme),
                     const SizedBox(height: 30),
-                    _buildSignUpLink(context),
+                    _buildSignUpLink(context, theme),
                     if (_loginMessage != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
@@ -108,32 +123,39 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildTextField(
-      String label,
-      IconData icon,
-      bool isPassword,
-      TextEditingController controller,
-      String? Function(String?) validator,
-      String hint) {
+    String label,
+    IconData icon,
+    bool isPassword,
+    TextEditingController controller,
+    String? Function(String?) validator,
+    String hint,
+    ThemeData theme,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
         controller: controller,
         obscureText: isPassword ? _obscurePassword : false,
         decoration: InputDecoration(
-          enabledBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey),
+          enabledBorder: UnderlineInputBorder(
+            borderSide:
+                BorderSide(color: theme.colorScheme.onSurface.withOpacity(0.5)),
           ),
-          focusedBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF725DFE), width: 2.0),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: const Color(0xFF725DFE), width: 2.0),
           ),
           labelText: label,
-          labelStyle: const TextStyle(
-              color: Colors.grey, fontSize: 18, fontWeight: FontWeight.bold),
+          labelStyle: TextStyle(
+              color: theme.colorScheme.onSurface.withOpacity(0.7),
+              fontSize: 18,
+              fontWeight: FontWeight.bold),
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.black54, fontSize: 16),
+          hintStyle: TextStyle(
+              color: theme.colorScheme.onSurface.withOpacity(0.5),
+              fontSize: 16),
           prefixIcon: Icon(
             icon,
-            color: Colors.grey,
+            color: theme.colorScheme.onSurface.withOpacity(0.7),
             size: 24,
           ),
           suffixIcon: isPassword
@@ -145,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   icon: Icon(
                     _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.grey,
+                    color: theme.colorScheme.onSurface.withOpacity(0.7),
                   ),
                 )
               : null,
@@ -155,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildLoginButton(BuildContext context) {
+  Widget _buildLoginButton(BuildContext context, ThemeData theme) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(10),
@@ -178,15 +200,16 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildSignUpLink(BuildContext context) {
+  Widget _buildSignUpLink(BuildContext context, ThemeData theme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
+        Text(
           "ليس لديك حساب ؟",
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurface.withOpacity(0.7),
           ),
         ),
         TextButton(
@@ -197,11 +220,11 @@ class _LoginPageState extends State<LoginPage> {
                   builder: (context) => const SignUpPage_citzen()),
             );
           },
-          child: const Text(
+          child: Text(
             "انشاء حساب",
             style: TextStyle(
               fontSize: 20,
-              color: Color(0xFF725DFE),
+              color: const Color(0xFF725DFE),
               fontWeight: FontWeight.bold,
             ),
           ),

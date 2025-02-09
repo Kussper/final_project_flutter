@@ -10,9 +10,10 @@ class EmployeeAppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final bool isDarkMode = themeProvider.isDarkMode;
 
-    // صورة المستخدم، إذا لم تكن متاحة سيتم عرض الأيقونة الافتراضية
-    // String? userImage; // هنا يتم جلب الصورة من بيانات المستخدم إذا كانت متاحة
+    // Dynamic icon color for dark and light mode
+    final Color iconColor = isDarkMode ? Colors.white54 : Colors.grey[700]!;
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -29,45 +30,34 @@ class EmployeeAppDrawer extends StatelessWidget {
                 "yousef121@civic.eg",
                 textAlign: TextAlign.right,
               ),
-              currentAccountPicture: CircleAvatar(
+              currentAccountPicture: const CircleAvatar(
                 backgroundImage: AssetImage('images/user.jpg'),
               ),
-              decoration: BoxDecoration(color: Color(0xFF725DFE)),
+              decoration: const BoxDecoration(color: Color(0xFF725DFE)),
             ),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   _createDrawerItem(
-                      icon: Icons.settings,
-                      text: 'الاعدادات',
-                      onTap: () => _navigateTo(context, 'Settings')),
-                  ListTile(
-                    leading: Icon(Icons.brightness_6),
-                    title: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.end, // Aligns children to the right
-                      children: [
-                        Switch(
-                          value: themeProvider.isDarkMode,
-                          onChanged: (value) {
-                            themeProvider.toggleTheme();
-                          },
-                        ),
-                        Text('الوضع المظلم',
-                            textAlign:
-                                TextAlign.right), // Text aligned to the right
-                      ],
-                    ),
+                    icon: isDarkMode ? Icons.settings_outlined : Icons.settings,
+                    text: 'الاعدادات',
+                    iconColor: iconColor,
+                    onTap: () => _navigateTo(context, 'Settings'),
+                  ),
+                  _darkModeToggle(themeProvider, iconColor, isDarkMode),
+                  _createDrawerItem(
+                    icon: isDarkMode ? Icons.help_outline : Icons.help,
+                    text: 'المساعدة والدعم',
+                    iconColor: iconColor,
+                    onTap: () => _navigateTo(context, 'Help & Support'),
                   ),
                   _createDrawerItem(
-                      icon: Icons.help,
-                      text: 'المساعدة والدعم',
-                      onTap: () => _navigateTo(context, 'Help & Support')),
-                  _createDrawerItem(
-                      icon: Icons.info,
-                      text: 'عن التطبيق',
-                      onTap: () => _navigateTo(context, 'About')),
+                    icon: isDarkMode ? Icons.info_outline : Icons.info,
+                    text: 'عن التطبيق',
+                    iconColor: iconColor,
+                    onTap: () => _navigateTo(context, 'About'),
+                  ),
                 ],
               ),
             ),
@@ -75,13 +65,13 @@ class EmployeeAppDrawer extends StatelessWidget {
             ListTile(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     'تسجيل الخروج',
                     style: TextStyle(color: Colors.red),
                   ),
-                  SizedBox(width: 8),
-                  Icon(Icons.logout, color: Colors.red),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.logout, color: Colors.red),
                 ],
               ),
               onTap: () => _logout(context),
@@ -92,15 +82,43 @@ class EmployeeAppDrawer extends StatelessWidget {
     );
   }
 
+  /// Creates a drawer item where **icons adapt to dark/light mode**.
   Widget _createDrawerItem({
     required IconData icon,
     required String text,
+    required Color iconColor,
     GestureTapCallback? onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: Colors.grey[700]),
+      leading: Icon(icon, color: iconColor),
       title: Text(text, textAlign: TextAlign.right),
       onTap: onTap,
+    );
+  }
+
+  /// Dark Mode Toggle: **Uses Outlined Icon in Dark Mode**
+  Widget _darkModeToggle(
+      ThemeProvider themeProvider, Color iconColor, bool isDarkMode) {
+    return ListTile(
+      leading: Icon(
+          isDarkMode ? Icons.brightness_6_outlined : Icons.brightness_6,
+          color: iconColor),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'الوضع المظلم',
+            textAlign: TextAlign.right,
+            style: TextStyle(fontSize: 16),
+          ),
+          Switch(
+            value: themeProvider.isDarkMode,
+            onChanged: (value) {
+              themeProvider.toggleTheme();
+            },
+          ),
+        ],
+      ),
     );
   }
 

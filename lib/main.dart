@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submit/Screens/Login_Page.dart';
-import '/Screens/home_screen.dart';
 import '/themes/theme_provider.dart';
 
 void main() {

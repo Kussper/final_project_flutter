@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '/comp_emmploye/drawer_employee.dart';
 import '../comp/app_bar.dart';
 import '/comp_emmploye/bottom_nav_employee.dart';
+import '/themes/theme_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -43,6 +45,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final theme = themeProvider.themeData;
+    final isDarkMode = themeProvider.isDarkMode;
+
     return Scaffold(
       appBar: const CustomAppBar(),
       endDrawer: const EmployeeAppDrawer(),
@@ -50,6 +56,7 @@ class _HomePageState extends State<HomePage> {
         selectedIndex: 0,
         onItemTapped: (index) {},
       ),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Directionality(
         textDirection: TextDirection.rtl, // دعم اللغة العربية
         child: Padding(
@@ -57,13 +64,13 @@ class _HomePageState extends State<HomePage> {
           child: ListView(
             physics: const BouncingScrollPhysics(),
             children: [
-              _buildWelcomeMessage(),
+              _buildWelcomeMessage(theme),
               const SizedBox(height: 20),
-              _buildStatisticsCounters(),
+              _buildStatisticsCounters(theme, isDarkMode),
               const SizedBox(height: 25),
-              _buildLatestReportsTitle(),
+              _buildLatestReportsTitle(theme),
               const SizedBox(height: 10),
-              _buildLatestReportsList(),
+              _buildLatestReportsList(theme, isDarkMode),
             ],
           ),
         ),
@@ -72,46 +79,49 @@ class _HomePageState extends State<HomePage> {
   }
 
   // **رسالة الترحيب**
-  Widget _buildWelcomeMessage() {
-    return const Column(
+  Widget _buildWelcomeMessage(ThemeData theme) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "مرحبًا بك 👋",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: theme.textTheme.headlineSmall
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
           "إليك ملخص سريع للبلاغات الخاصة بك:",
-          style: TextStyle(fontSize: 16, color: Colors.black54),
+          style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
         ),
       ],
     );
   }
 
   // **عدّادات رقمية للإحصائيات**
-  Widget _buildStatisticsCounters() {
+  Widget _buildStatisticsCounters(ThemeData theme, bool isDarkMode) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildCounterCard("معلق", "5", Colors.red),
-        _buildCounterCard("قيد التنفيذ", "2", Colors.orange),
-        _buildCounterCard("تم الحل", "10", Colors.green),
+        _buildCounterCard("معلق", "5", Colors.red, theme, isDarkMode),
+        _buildCounterCard("قيد التنفيذ", "2", Colors.orange, theme, isDarkMode),
+        _buildCounterCard("تم الحل", "10", Colors.green, theme, isDarkMode),
       ],
     );
   }
 
   // **تصميم بطاقة العدّادات الرقمية**
-  Widget _buildCounterCard(String title, String count, Color color) {
+  Widget _buildCounterCard(String title, String count, Color color,
+      ThemeData theme, bool isDarkMode) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color:
+          isDarkMode ? Colors.grey[800] : Colors.white, // Adjust for dark mode
       child: Container(
         width: 100,
         height: 120,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -120,15 +130,13 @@ class _HomePageState extends State<HomePage> {
             Text(
               count,
               style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+                  fontSize: 28, fontWeight: FontWeight.bold, color: color),
             ),
             const SizedBox(height: 5),
             Text(
               title,
-              style: const TextStyle(fontSize: 14, color: Colors.black87),
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -137,55 +145,70 @@ class _HomePageState extends State<HomePage> {
   }
 
   // **عنوان قسم أحدث البلاغات**
-  Widget _buildLatestReportsTitle() {
-    return const Text(
+  Widget _buildLatestReportsTitle(ThemeData theme) {
+    return Text(
       "أحدث البلاغات المسندة",
-      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
     );
   }
 
   // **قائمة أحدث البلاغات بتصميم حديث**
-  Widget _buildLatestReportsList() {
+  Widget _buildLatestReportsList(ThemeData theme, bool isDarkMode) {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: latestReports.length,
       separatorBuilder: (_, __) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
-        return _buildExpandableReportCard(latestReports[index]);
+        return _buildExpandableReportCard(
+            latestReports[index], theme, isDarkMode);
       },
     );
   }
 
   // **تصميم بطاقة عرض البلاغات القابلة للتوسعة**
-  Widget _buildExpandableReportCard(Map<String, String> report) {
-    return ExpansionTile(
-      initiallyExpanded: false,
-      backgroundColor: Colors.white,
-      collapsedShape: RoundedRectangleBorder(
+  Widget _buildExpandableReportCard(
+      Map<String, String> report, ThemeData theme, bool isDarkMode) {
+    return Card(
+      color:
+          isDarkMode ? Colors.grey[800] : Colors.white, // Adapting to dark mode
+      elevation: 3,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: _getStatusColor(report['status']!), width: 1.5),
       ),
-      title: Text(
-        report['title']!,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-      ),
-      subtitle: Text("📍 ${report['location']} • ${report['time']}"),
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Text(
-            report['description']!,
-            textAlign: TextAlign.justify,
-            style: const TextStyle(fontSize: 14, color: Colors.black87),
+      child: ExpansionTile(
+        collapsedTextColor: theme.textTheme.bodyLarge?.color,
+        iconColor: theme.iconTheme.color,
+        title: Text(
+          report['title']!,
+          style:
+              theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          "📍 ${report['location']} • ${report['time']}",
+          style: theme.textTheme.bodyMedium,
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              report['description']!,
+              textAlign: TextAlign.justify,
+              style: theme.textTheme.bodyMedium,
+            ),
           ),
-        ),
-        TextButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.phone, color: Colors.blue),
-          label: Text("اتصل: ${report['contact']}"),
-        ),
-      ],
+          TextButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.phone, color: Color(0xFF725DFE)),
+            label: Text(
+              "اتصل: ${report['contact']}",
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: Color(0xFF725DFE)),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

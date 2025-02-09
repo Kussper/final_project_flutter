@@ -46,6 +46,7 @@ dependencies:
   geolocator: ^9.0.2
   font_awesome_flutter: ^10.8.0
   easy_localization: ^3.0.7+1
+  flutter_svg: ^2.0.9 
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,10 @@ flutter:
     - images/logo.jpg
     - images/user.jpg
     - images/logo-removebg-preview.png
+    - images/logo-white.png
+    - images/emp1.jpg
+    - images/5984913_57279.svg
+    - images/emp2.jpg
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

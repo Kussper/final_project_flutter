@@ -11,24 +11,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: const Color(0xFF725DFE),
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.start, // جعل المحتوى في اليسار
+        mainAxisAlignment:
+            MainAxisAlignment.start, // Keeps content aligned to the left
         children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(
-                  '/home'); // استبدل '/home' بمسار الشاشة الرئيسية
-            },
-            child: Image.asset(
-              'images/logo-removebg-preview.png',
-              height: 60, // ضبط الحجم
-              fit: BoxFit.contain,
-              color: Colors.white,
-            ),
+          Image.asset(
+            'images/logo-removebg-preview.png',
+            height: 60,
+            fit: BoxFit.contain,
+            color: Colors.white,
           ),
         ],
       ),
-      iconTheme: const IconThemeData(color: Colors.white), // ضبط لون الأيقونات
-      elevation: 0, // إزالة الظل لجعل التصميم أنيقًا
+      iconTheme: const IconThemeData(color: Colors.white),
+      elevation: 0,
     );
   }
 }
