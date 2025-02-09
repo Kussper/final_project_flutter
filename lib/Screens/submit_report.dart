@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submit/Screens/ChatbotScreen.dart';
-import 'package:submit/comp/bottomnav.dart'; // Import the custom bottom navigation bar
-import '/comp/app_drawer.dart';
-import '/comp/app_bar.dart';
+import 'package:submit/comp_citizen/bottomnav.dart'; // Import the custom bottom navigation bar
+import '../comp_citizen/app_drawer.dart';
+import '../shared_screens/app_bar.dart';
 import '/themes/theme_provider.dart';
 import 'home_screen.dart'; // Import HomeScreen
 import 'track_reports.dart'; // Import TrackReportsPage

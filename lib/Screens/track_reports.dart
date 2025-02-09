@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submit/Screens/home_screen.dart';
 import 'package:submit/Screens/submit_report.dart';
-import '/comp/app_drawer.dart';
-import '/comp/app_bar.dart';
-import '/comp/bottomnav.dart'; // Custom bottom navigation bar
+import '../comp_citizen/app_drawer.dart';
+import '../shared_screens/app_bar.dart';
+import '../comp_citizen/bottomnav.dart'; // Custom bottom navigation bar
 import '/themes/theme_provider.dart';
 
 class TrackReportsPage extends StatefulWidget {

@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:submit/themes/darkmode.dart';
 import 'package:submit/themes/theme_provider.dart';
 import '../themes/lightmode.dart';
-import 'package:submit/comp/app_bar.dart';
-import '../comp/app_drawer.dart';
+import 'package:submit/shared_screens/app_bar.dart';
+import '../comp_citizen/app_drawer.dart';
 
 void main() {
   runApp(

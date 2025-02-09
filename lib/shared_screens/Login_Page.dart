@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:submit/Screens/home_screen.dart';
 import '../employee_scrrens/home_page.dart';
 import '../themes/theme_provider.dart';
-import 'Register_Page_citzen.dart';
+import '../Screens/Register_Page_citzen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

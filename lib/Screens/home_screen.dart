@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../themes/theme_provider.dart';
-import '/comp/app_drawer.dart';
-import '/comp/app_bar.dart';
-import '/comp/bottomnav.dart';
+import '../comp_citizen/app_drawer.dart';
+import '../shared_screens/app_bar.dart';
+import '../comp_citizen/bottomnav.dart';
 import 'submit_report.dart';
 import 'track_reports.dart';
 
